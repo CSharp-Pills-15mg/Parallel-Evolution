@@ -83,6 +83,44 @@ Thread thread = new(Work);
 thread.IsBackground = true;
 ```
 
+### Main thread waits for the secondary thread to end
+
+There are mechanisms for the main thread to wait until the second thread ended. Synchronization mechanisms like `ManualResetEvent` can be used for that:
+
+```csharp
+internal class ThreadExample
+{
+    private readonly ManualResetEventSlim manualResetEventSlim = new();
+
+    public WaitHandle Execute()
+    {
+        manualResetEventSlim.Reset();
+
+        Thread thread = new(Work);
+        thread.Start();
+
+        return manualResetEventSlim.WaitHandle;
+    }
+
+    private void Work()
+    {
+        // Some work to be done.
+
+        manualResetEventSlim.Set();
+    }
+}
+```
+
+The caller will have to wait like this:
+
+```csharp
+ThreadExample threadExample = new();
+WaitHandle waitHandle = threadExample.Execute();
+waitHandle.WaitOne();
+
+// Continue the execution after the secondary thread finished.
+```
+
 ## `ThreadPool`
 
 The same job can be done using a thread from the `ThreadPool`.

@@ -18,7 +18,7 @@ internal static class Program
             //RunThreadPoolExample();
             //RunTaskExample();
             //await RunAsyncAwaitExample();
-            await RunAsyncAwaitExample2();
+            //await RunAsyncAwaitExample2();
         }
         catch (Exception ex)
         {
